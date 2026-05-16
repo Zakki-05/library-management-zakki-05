@@ -4,32 +4,102 @@
 {% block page_title %}About Us{% endblock %}
 
 {% block content %}
-<div class="glass-card p-5 text-center">
-    <i class="fa-solid fa-book-open-reader fa-4x text-primary mb-4"></i>
-    <h2 class="fw-bold mb-4">About Our Modern Library</h2>
-    <p class="lead text-muted mx-auto mb-4" style="max-width: 800px;">
-        Our Library Management System is built to provide an intuitive, seamless, and powerful experience for students and librarians alike. Manage resources effectively and find exactly what you need.
-    </p>
-    <div class="row mt-5 text-start">
-        <div class="col-md-4 mb-4">
-            <div class="p-4 bg-light rounded h-100">
-                <i class="fa-solid fa-bolt fa-2x text-warning mb-3"></i>
-                <h5>Fast & Efficient</h5>
-                <p class="text-muted small">Our search and filter capabilities ensure you find your book instantly without hassle.</p>
+{% block content %}
+<div class="animate-fade">
+    <div class="glass-card overflow-hidden mb-5">
+        <div class="row g-0">
+            <div class="col-lg-6 p-5 d-flex flex-column justify-content-center">
+                <span class="badge rounded-pill px-3 py-2 mb-3 align-self-start" style="background: var(--border); color: var(--primary);">
+                    <i class="fa-solid fa-sparkles me-2"></i> Elevating Knowledge
+                </span>
+                <h1 class="display-5 fw-bold mb-4">Redefining the <span class="text-primary-alt">Library Experience</span></h1>
+                <p class="text-muted fs-5 mb-0">
+                    Welcome to our state-of-the-art Library Management System. We believe that access to knowledge should be as seamless and modern as the world around us.
+                </p>
+            </div>
+            <div class="col-lg-6 bg-light d-none d-lg-flex align-items-center justify-content-center border-start" style="background: var(--bg-sidebar) !important; border-color: var(--border) !important;">
+                <i class="fa-solid fa-book-bookmark text-dim opacity-25" style="font-size: 12rem;"></i>
             </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="p-4 bg-light rounded h-100">
-                <i class="fa-solid fa-shield-halved fa-2x text-success mb-3"></i>
-                <h5>Secure</h5>
-                <p class="text-muted small">Built with robust backend architecture to keep your data and transactions safe.</p>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100">
+                <div class="stat-icon"><i class="fa-solid fa-eye"></i></div>
+                <h5 class="fw-bold mb-3">Our Mission</h5>
+                <p class="text-muted small">To democratize access to information by providing a high-performance digital hub for readers, researchers, and students.</p>
             </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="p-4 bg-light rounded h-100">
-                <i class="fa-solid fa-mobile-screen-button fa-2x text-info mb-3"></i>
-                <h5>Responsive</h5>
-                <p class="text-muted small">Access the library from anywhere, on any device. Fully optimized for mobile.</p>
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100">
+                <div class="stat-icon"><i class="fa-solid fa-layer-group"></i></div>
+                <h5 class="fw-bold mb-3">Core Values</h5>
+                <p class="text-muted small">Innovation, accessibility, and user-centric design are at the heart of everything we build.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100">
+                <div class="stat-icon"><i class="fa-solid fa-code"></i></div>
+                <h5 class="fw-bold mb-3">The Technology</h5>
+                <p class="text-muted small">Powered by Django 5.0 and our proprietary Prime UI design system for a lightning-fast experience.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card p-5">
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <h2 class="fw-bold mb-4">Comprehensive Features</h2>
+                <ul class="list-unstyled d-flex flex-column gap-3">
+                    <li class="d-flex align-items-start gap-3">
+                        <div class="text-primary-alt mt-1"><i class="fa-solid fa-check-circle"></i></div>
+                        <div>
+                            <span class="fw-bold d-block">Smart Inventory</span>
+                            <span class="text-muted small">Real-time tracking of book availability and automated stock management.</span>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3">
+                        <div class="text-primary-alt mt-1"><i class="fa-solid fa-check-circle"></i></div>
+                        <div>
+                            <span class="fw-bold d-block">Digital Transaction Log</span>
+                            <span class="text-muted small">Transparent history of all borrowing activities with instant PDF exports.</span>
+                        </div>
+                    </li>
+                    <li class="d-flex align-items-start gap-3">
+                        <div class="text-primary-alt mt-1"><i class="fa-solid fa-check-circle"></i></div>
+                        <div>
+                            <span class="fw-bold d-block">User Wishlists</span>
+                            <span class="text-muted small">Personalized reading lists to help you keep track of your next obsession.</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <div class="p-4 rounded-4" style="background: var(--bg-sidebar); border: 1px dashed var(--border);">
+                    <h6 class="text-uppercase small fw-bold text-dim mb-3">Current Statistics</h6>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="small text-muted">Books Registered</span>
+                        <span class="small fw-bold">12,450+</span>
+                    </div>
+                    <div class="progress mb-4" style="height: 6px; background: var(--border);">
+                        <div class="progress-bar" style="width: 85%; background: var(--primary-alt);"></div>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="small text-muted">Active Users</span>
+                        <span class="small fw-bold">4,800+</span>
+                    </div>
+                    <div class="progress mb-4" style="height: 6px; background: var(--border);">
+                        <div class="progress-bar" style="width: 60%; background: var(--accent);"></div>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="small text-muted">Daily Borrowings</span>
+                        <span class="small fw-bold">150+</span>
+                    </div>
+                    <div class="progress" style="height: 6px; background: var(--border);">
+                        <div class="progress-bar" style="width: 45%; background: var(--primary);"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
