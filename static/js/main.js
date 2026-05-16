@@ -6,9 +6,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const overlay = document.getElementById('sidebar-overlay');
     
     function toggleSidebar() {
+        if (!sidebar) return;
         sidebar.classList.toggle('active');
-        overlay.classList.toggle('active');
+        if (overlay) overlay.classList.toggle('active');
         document.body.classList.toggle('no-scroll');
+    }
+
+    function closeSidebar() {
+        if (!sidebar) return;
+        sidebar.classList.remove('active');
+        if (overlay) overlay.classList.remove('active');
+        document.body.classList.remove('no-scroll');
     }
 
     if (sidebarCollapse) {
@@ -16,11 +24,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (sidebarClose) {
-        sidebarClose.addEventListener('click', toggleSidebar);
+        sidebarClose.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeSidebar();
+        });
     }
 
     if (overlay) {
-        overlay.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', closeSidebar);
     }
 
     // Close sidebar on link click (for mobile experience)
