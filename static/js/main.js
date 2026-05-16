@@ -46,41 +46,49 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    // Theme toggle
-    const themeToggleBtn = document.getElementById('theme-toggle');
+    // Theme toggle (Synchronized for multiple buttons)
+    const themeToggleBtns = document.querySelectorAll('.theme-toggle-btn');
     const htmlElement = document.documentElement;
-    const themeIcon = document.getElementById('theme-icon');
+    const themeIcons = document.querySelectorAll('.theme-icon');
 
-    // Check for saved theme preference or use system preference
+    function updateIcons(isDark) {
+        themeIcons.forEach(icon => {
+            if (isDark) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+    }
+
+    // Check for saved theme preference
     const savedTheme = localStorage.getItem('theme');
     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
     if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
         htmlElement.setAttribute('data-theme', 'dark');
-        if (themeIcon) {
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        }
+        updateIcons(true);
     } else {
         htmlElement.setAttribute('data-theme', 'light');
+        updateIcons(false);
     }
 
-    if (themeToggleBtn) {
-        themeToggleBtn.addEventListener('click', () => {
+    themeToggleBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
             const currentTheme = htmlElement.getAttribute('data-theme');
             if (currentTheme === 'dark') {
                 htmlElement.setAttribute('data-theme', 'light');
                 localStorage.setItem('theme', 'light');
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
+                updateIcons(false);
             } else {
                 htmlElement.setAttribute('data-theme', 'dark');
                 localStorage.setItem('theme', 'dark');
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
+                updateIcons(true);
             }
         });
-    }
+    });
 
     // Auto-dismiss alerts
     const alerts = document.querySelectorAll('.alert');
