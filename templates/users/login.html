@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Login{% endblock %}
+{% block page_title %}Sign In{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="glass-card p-5">
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-circle-user fa-3x text-primary mb-3"></i>
+                <h3 class="fw-bold">Welcome Back</h3>
+                <p class="text-muted">Please sign in to your account</p>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary-custom btn-lg">Sign In</button>
+                </div>
+            </form>
+            
+            <div class="text-center mt-4">
+                <p class="mb-0">Don't have an account? <a href="{% url 'register' %}" class="text-primary text-decoration-none fw-bold">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

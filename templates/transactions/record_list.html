@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Borrow Records{% endblock %}
+{% block page_title %}Borrow Records{% endblock %}
+
+{% block content %}
+<div class="glass-card">
+    <div class="card-header bg-transparent border-bottom-0 p-4 pb-0">
+        <h4 class="mb-0 fw-bold">All Transaction Records</h4>
+    </div>
+    <div class="card-body p-4">
+        <div class="table-responsive">
+            <table class="table table-custom table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Student</th>
+                        <th>Book</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Fine</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in records %}
+                    <tr>
+                        <td>#{{ record.id }}</td>
+                        <td>{{ record.user.username }}</td>
+                        <td>{{ record.book.title }}</td>
+                        <td>{{ record.borrow_date }}</td>
+                        <td>{{ record.due_date }}</td>
+                        <td>
+                            {% if record.status == 'BORROWED' %}
+                                <span class="badge bg-warning text-dark rounded-pill">Borrowed</span>
+                            {% elif record.status == 'RETURNED' %}
+                                <span class="badge bg-success rounded-pill">Returned</span>
+                            {% else %}
+                                <span class="badge bg-danger rounded-pill">Overdue</span>
+                            {% endif %}
+                        </td>
+                        <td>₹{{ record.fine_amount }}</td>
+                        <td>
+                            {% if record.status != 'RETURNED' %}
+                            <a href="{% url 'transactions:return_book' record.id %}" class="btn btn-sm btn-outline-primary" onclick="return confirm('Confirm return of this book?');">
+                                Mark Returned
+                            </a>
+                            {% else %}
+                            <span class="text-muted small">Returned on {{ record.return_date }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">No records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

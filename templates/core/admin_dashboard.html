@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+{% block page_title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<!-- Welcome Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="glass-card p-4 d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="fw-bold mb-1">Welcome back, {{ user.username }}! 👋</h2>
+                <p class="text-muted mb-0">Here's what's happening in your library today.</p>
+            </div>
+            <div class="d-none d-md-block text-end">
+                <h5 class="fw-bold mb-0" id="current-time"></h5>
+                <p class="text-muted mb-0">{% now "F d, Y" %}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6 col-lg-4">
+        <div class="glass-card stat-card">
+            <div class="stat-icon bg-primary text-white">
+                <i class="fa-solid fa-book"></i>
+            </div>
+            <div class="stat-details">
+                <p>Total Books</p>
+                <h4>{{ total_books }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="glass-card stat-card">
+            <div class="stat-icon bg-success text-white">
+                <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="stat-details">
+                <p>Total Students</p>
+                <h4>{{ total_users }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="glass-card stat-card">
+            <div class="stat-icon bg-info text-white">
+                <i class="fa-solid fa-hand-holding-hand"></i>
+            </div>
+            <div class="stat-details">
+                <p>Issued Books</p>
+                <h4>{{ issued_books }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="glass-card stat-card">
+            <div class="stat-icon bg-warning text-dark">
+                <i class="fa-solid fa-rotate-left"></i>
+            </div>
+            <div class="stat-details">
+                <p>Returned Books</p>
+                <h4>{{ returned_books }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="glass-card stat-card">
+            <div class="stat-icon bg-danger text-white">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+            <div class="stat-details">
+                <p>Overdue Books</p>
+                <h4>{{ overdue_books }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="glass-card stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, rgba(100, 116, 139, 0.2), rgba(100, 116, 139, 0.05)); color: #64748b;">
+                <i class="fa-solid fa-coins"></i>
+            </div>
+            <div class="stat-details">
+                <p>Fine Collected</p>
+                <h4>₹{{ total_fine }}</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="glass-card p-4">
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                    <h5 class="fw-bold mb-1">Transaction Overview</h5>
+                    <p class="text-muted small mb-0">Weekly activity for book issuances</p>
+                </div>
+                <span class="badge bg-primary-subtle text-primary rounded-pill px-3">Last 7 Days</span>
+            </div>
+            <div style="height: 300px; position: relative;">
+                <canvas id="transactionChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="glass-card p-4 h-100">
+            <h5 class="fw-bold mb-4">Quick Actions</h5>
+            <div class="d-grid gap-3">
+                <a href="{% url 'transactions:export_pdf' %}" class="btn btn-primary-custom d-flex align-items-center justify-content-center py-3">
+                    <i class="fa-solid fa-file-pdf fs-5 me-2"></i>
+                    <div class="text-start">
+                        <div class="fw-bold">Export Report</div>
+                        <small class="opacity-75 d-block" style="font-size: 0.7rem; font-weight: normal;">Download PDF Summary</small>
+                    </div>
+                </a>
+                
+                <button class="btn btn-outline-success border-2 d-flex align-items-center justify-content-center py-3 rounded-4">
+                    <i class="fa-solid fa-file-excel fs-5 me-2"></i>
+                    <div class="text-start">
+                        <div class="fw-bold">User Data</div>
+                        <small class="text-muted d-block" style="font-size: 0.7rem;">Export to Excel</small>
+                    </div>
+                </button>
+
+                <div class="mt-2">
+                    <div class="p-3 rounded-4 bg-light d-flex align-items-center gap-3">
+                        <div class="bg-white rounded-circle p-2 shadow-sm">
+                            <i class="fa-solid fa-bell text-warning"></i>
+                        </div>
+                        <div>
+                            <small class="d-block text-muted">System Status</small>
+                            <span class="fw-bold text-success" style="font-size: 0.85rem;"><i class="fa-solid fa-circle fa-2xs me-1"></i> All systems go</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-12">
+        <div class="glass-card">
+            <!-- Existing Recent Activities Table -->
+            <div class="card-header bg-transparent border-bottom-0 p-4 pb-0 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold">Recent Activities</h5>
+                <a href="{% url 'transactions:record_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Student</th>
+                                <th>Book Title</th>
+                                <th>Issue Date</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th class="text-end pe-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in recent_activities %}
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 38px; height: 38px; font-weight: 600;">
+                                            {{ record.user.username|make_list|first|upper }}
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">{{ record.user.username }}</div>
+                                            <small class="text-muted">{{ record.user.email }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="fw-medium text-primary">{{ record.book.title }}</div>
+                                    <small class="text-muted">ISBN: {{ record.book.isbn }}</small>
+                                </td>
+                                <td>{{ record.borrow_date|date:"M d, Y" }}</td>
+                                <td>{{ record.due_date|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if record.status == 'BORROWED' %}
+                                        <span class="badge bg-warning text-dark rounded-pill px-3">Borrowed</span>
+                                    {% elif record.status == 'RETURNED' %}
+                                        <span class="badge bg-success rounded-pill px-3">Returned</span>
+                                    {% else %}
+                                        <span class="badge bg-danger rounded-pill px-3">Overdue</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a href="{% url 'transactions:record_list' %}" class="btn btn-sm btn-light rounded-pill">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="fa-solid fa-inbox fa-3x mb-3 d-block opacity-25"></i>
+                                    No recent activities found.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+{{ chart_labels|json_script:"chart-labels" }}
+{{ chart_data|json_script:"chart-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update time
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const timeEl = document.getElementById('current-time');
+            if (timeEl) timeEl.textContent = timeStr;
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        const chartLabels = JSON.parse(document.getElementById('chart-labels').textContent);
+        const chartData = JSON.parse(document.getElementById('chart-data').textContent);
+        
+        const ctx = document.getElementById('transactionChart').getContext('2d');
+        
+        // Create gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(99, 102, 241, 0.2)');
+        gradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Books Issued',
+                    data: chartData,
+                    borderColor: '#6366f1',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#6366f1',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: gradient
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        padding: 12,
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 13 },
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return ` ${context.parsed.y} Books Issued`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            precision: 0,
+                            font: { size: 12 }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { size: 12 }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

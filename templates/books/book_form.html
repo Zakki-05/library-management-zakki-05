@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if form.instance.pk %}Edit Book{% else %}Add Book{% endif %}{% endblock %}
+{% block page_title %}{% if form.instance.pk %}Edit Book{% else %}Add New Book{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="glass-card p-4 p-md-5">
+            <div class="mb-4 d-flex align-items-center gap-3">
+                <div class="bg-primary text-white rounded p-3 d-inline-flex">
+                    <i class="fa-solid fa-book-medical fa-lg"></i>
+                </div>
+                <h3 class="fw-bold mb-0">{% if form.instance.pk %}Update Book Details{% else %}Register New Book{% endif %}</h3>
+            </div>
+            
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        {{ form.title|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.author|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.category|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.isbn|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.publisher|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.publication_date|as_crispy_field }}
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        {{ form.total_quantity|as_crispy_field }}
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        {{ form.available_quantity|as_crispy_field }}
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        {{ form.description|as_crispy_field }}
+                    </div>
+                    <div class="col-md-12 mb-4">
+                        {{ form.cover_image|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary-custom">Save Book</button>
+                    <a href="{% url 'books:list' %}" class="btn btn-light">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

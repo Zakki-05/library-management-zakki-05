@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Books Collection{% endblock %}
+{% block page_title %}Books Collection{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="glass-card p-4">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label class="form-label text-muted small">Search Books</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0"><i class="fa-solid fa-search"></i></span>
+                        <input type="text" name="q" class="form-control border-start-0 ps-0" placeholder="Title, Author, or ISBN" value="{{ request.GET.q }}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label text-muted small">Category</label>
+                    <select name="category" class="form-select">
+                        <option value="">All Categories</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label text-muted small">Sort By</label>
+                    <select name="sort" class="form-select">
+                        <option value="latest" {% if request.GET.sort == 'latest' %}selected{% endif %}>Latest</option>
+                        <option value="available" {% if request.GET.sort == 'available' %}selected{% endif %}>Available</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary-custom w-100">Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4" id="book-list-container">
+    {% for book in books %}
+    <div class="col-md-4 col-lg-3 book-item" data-title="{{ book.title|lower }}" data-author="{{ book.author.name|lower }}">
+        <div class="glass-card h-100">
+            <div class="card-body text-center p-4">
+                {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" class="img-fluid rounded mb-3 shadow-sm" alt="{{ book.title }}" style="height: 250px; object-fit: cover; width: 100%;">
+                {% else %}
+                <div class="bg-light rounded mb-3 d-flex align-items-center justify-content-center shadow-sm" style="height: 250px; color: #cbd5e1; font-size: 4rem;">
+                    <i class="fa-solid fa-book"></i>
+                </div>
+                {% endif %}
+                <h5 class="card-title fw-bold text-truncate" title="{{ book.title }}">{{ book.title }}</h5>
+                <p class="text-muted small mb-1">{{ book.author.name }}</p>
+                <p class="small mb-3">
+                    {% if book.category %}<span class="badge bg-secondary">{{ book.category.name }}</span>{% endif %}
+                </p>
+                <div class="d-flex justify-content-between align-items-center mt-auto">
+                    <span class="fw-bold {% if book.available_quantity > 0 %}text-success{% else %}text-danger{% endif %}">
+                        {% if book.available_quantity > 0 %}
+                            <i class="fa-solid fa-check-circle me-1"></i>{{ book.available_quantity }} Available
+                        {% else %}
+                            <i class="fa-solid fa-times-circle me-1"></i>Out of Stock
+                        {% endif %}
+                    </span>
+                    <a href="{% url 'books:detail' book.pk %}" class="btn btn-sm btn-outline-primary">Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <i class="fa-solid fa-search fa-3x text-muted mb-3"></i>
+        <h4>No books found</h4>
+        <p class="text-muted">Try adjusting your search or filters.</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% block extra_js %}
+<script>
+    // Live Search Filter
+    const searchInput = document.querySelector('input[name="q"]');
+    const bookItems = document.querySelectorAll('.book-item');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            bookItems.forEach(item => {
+                const title = item.getAttribute('data-title');
+                const author = item.getAttribute('data-author');
+                if (title.includes(term) || author.includes(term)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+</script>
+{% endblock %}
+
+{% endblock %}

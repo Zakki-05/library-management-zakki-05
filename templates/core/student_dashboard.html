@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard{% endblock %}
+{% block page_title %}My Dashboard{% endblock %}
+
+{% block content %}
+<!-- Welcome Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="glass-card p-4 d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="fw-bold mb-1">Happy Reading, {{ user.username }}! 📚</h2>
+                <p class="text-muted mb-0">What would you like to read today?</p>
+            </div>
+            <div class="d-none d-md-block text-end">
+                <h5 class="fw-bold mb-0" id="current-time"></h5>
+                <p class="text-muted mb-0">{% now "F d, Y" %}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="glass-card stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 0.05)); color: var(--primary-color);">
+                <i class="fa-solid fa-book-open"></i>
+            </div>
+            <div class="stat-details">
+                <p>Borrowed Books</p>
+                <h4>{{ borrowed_books.count }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="glass-card stat-card">
+            <div class="stat-icon" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.05)); color: #ef4444;">
+                <i class="fa-solid fa-money-bill-wave"></i>
+            </div>
+            <div class="stat-details">
+                <p>Pending Fines</p>
+                <h4>₹{{ total_fine }}</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="glass-card h-100">
+            <div class="card-header bg-transparent border-bottom-0 p-4 pb-0 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold">My Current Books</h5>
+                <a href="{% url 'transactions:my_books' %}" class="btn btn-sm btn-outline-primary">View History</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Book Title</th>
+                                <th>Issue Date</th>
+                                <th>Due Date</th>
+                                <th class="text-end pe-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in borrowed_books %}
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded p-2 bg-light me-3">
+                                            <i class="fa-solid fa-book text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">{{ record.book.title }}</div>
+                                            <small class="text-muted">{{ record.book.author.name }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ record.borrow_date|date:"M d, Y" }}</td>
+                                <td>
+                                    <span class="badge bg-danger-subtle text-danger rounded-pill px-3">
+                                        {{ record.due_date|date:"M d, Y" }}
+                                    </span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <a href="{% url 'books:detail' record.book.pk %}" class="btn btn-sm btn-light rounded-pill">
+                                        <i class="fa-solid fa-eye me-1"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <i class="fa-solid fa-book-bookmark fa-3x mb-3 d-block opacity-25"></i>
+                                    You haven't borrowed any books currently.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="glass-card h-100">
+            <div class="card-header bg-transparent border-bottom-0 p-4 pb-0">
+                <h5 class="mb-0 fw-bold">New Arrivals</h5>
+            </div>
+            <div class="card-body p-4">
+                <ul class="list-group list-group-flush bg-transparent">
+                    {% for book in recently_added %}
+                    <li class="list-group-item bg-transparent px-0 border-light d-flex align-items-center gap-3">
+                        <div class="bg-light rounded p-2" style="width: 50px; height: 60px; display: flex; align-items:center; justify-content:center;">
+                            <i class="fa-solid fa-book text-muted"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1 text-truncate" style="max-width: 150px;">{{ book.title }}</h6>
+                            <small class="text-muted">{{ book.author.name }}</small>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const timeEl = document.getElementById('current-time');
+            if (timeEl) timeEl.textContent = timeStr;
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+    });
+</script>
+{% endblock %}

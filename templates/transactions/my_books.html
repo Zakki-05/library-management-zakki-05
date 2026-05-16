@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}My Books{% endblock %}
+{% block page_title %}My Borrowing History{% endblock %}
+
+{% block content %}
+<div class="glass-card">
+    <div class="card-header bg-transparent border-bottom-0 p-4 pb-0">
+        <h4 class="mb-0 fw-bold">My Books</h4>
+    </div>
+    <div class="card-body p-4">
+        <div class="table-responsive">
+            <table class="table table-custom table-hover">
+                <thead>
+                    <tr>
+                        <th>Book Title</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Return Date</th>
+                        <th>Status</th>
+                        <th>Fine (if any)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in records %}
+                    <tr>
+                        <td><a href="{% url 'books:detail' record.book.pk %}" class="text-decoration-none fw-bold">{{ record.book.title }}</a></td>
+                        <td>{{ record.borrow_date }}</td>
+                        <td>{{ record.due_date }}</td>
+                        <td>{{ record.return_date|default:"-" }}</td>
+                        <td>
+                            {% if record.status == 'BORROWED' %}
+                                <span class="badge bg-warning text-dark rounded-pill">Borrowed</span>
+                            {% elif record.status == 'RETURNED' %}
+                                <span class="badge bg-success rounded-pill">Returned</span>
+                            {% else %}
+                                <span class="badge bg-danger rounded-pill">Overdue</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if record.fine_amount > 0 %}
+                                <span class="text-danger fw-bold">₹{{ record.fine_amount }}</span>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">You have no borrowing history.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

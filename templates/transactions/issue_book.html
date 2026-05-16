@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Issue Book{% endblock %}
+{% block page_title %}Issue Book{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="glass-card p-4 p-md-5">
+            <div class="mb-4 d-flex align-items-center gap-3">
+                <div class="bg-primary text-white rounded p-3 d-inline-flex">
+                    <i class="fa-solid fa-hand-holding-hand fa-lg"></i>
+                </div>
+                <h3 class="fw-bold mb-0">Issue Book to Student</h3>
+            </div>
+            
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary-custom w-100">Issue Book</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

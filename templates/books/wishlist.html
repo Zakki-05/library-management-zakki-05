@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}My Wishlist{% endblock %}
+{% block page_title %}My Wishlist{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    {% for item in wishlist %}
+    <div class="col-md-4 col-lg-3">
+        <div class="glass-card h-100">
+            <div class="card-body text-center p-4">
+                {% if item.book.cover_image %}
+                <img src="{{ item.book.cover_image.url }}" class="img-fluid rounded mb-3 shadow-sm" alt="{{ item.book.title }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="bg-light rounded mb-3 d-flex align-items-center justify-content-center shadow-sm" style="height: 200px; color: #cbd5e1; font-size: 3rem;">
+                    <i class="fa-solid fa-book"></i>
+                </div>
+                {% endif %}
+                <h5 class="card-title fw-bold text-truncate">{{ item.book.title }}</h5>
+                <p class="text-muted small mb-3">{{ item.book.author.name }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{% url 'books:detail' item.book.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+                    <a href="{% url 'books:toggle_wishlist' item.book.pk %}" class="btn btn-sm btn-outline-danger">Remove</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <div class="glass-card p-5">
+            <i class="fa-regular fa-heart fa-4x text-muted mb-3"></i>
+            <h4>Your wishlist is empty</h4>
+            <p class="text-muted">Save books you want to read later here.</p>
+            <a href="{% url 'books:list' %}" class="btn btn-primary-custom mt-3">Browse Books</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
